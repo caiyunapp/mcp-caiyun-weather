@@ -1,0 +1,21 @@
+[project]
+name = "mcp-caiyun-weather"
+version = "0.1.0"
+description = "Caiyun Weather MCP Server"
+readme = "README.md"
+authors = [
+    { name = "tssujt", email = "xujiawei@caiyunapp.com" }
+]
+requires-python = ">=3.12"
+dependencies = [
+    "httpx>=0.28.1",
+    "mcp[cli]>=1.5.0",
+    "pydantic>=2.10.6",
+]
+
+[project.scripts]
+mcp-caiyun-weather = "mcp_caiyun_weather:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
