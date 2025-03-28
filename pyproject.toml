@@ -3,8 +3,15 @@ name = "mcp-caiyun-weather"
 version = "0.1.0"
 description = "Caiyun Weather MCP Server"
 readme = "README.md"
+maintainers = [
+    { name = "adamwen", email = "adamwen829@gmail.com" },
+    { name = "tssujt", email = "xujiawei@caiyunapp.com" },
+    { name = "caiyunapp", email = "oss@caiyunapp.com" },
+]
 authors = [
-    { name = "tssujt", email = "xujiawei@caiyunapp.com" }
+    { name = "adamwen", email = "adamwen829@gmail.com" },
+    { name = "tssujt", email = "xujiawei@caiyunapp.com" },
+    { name = "caiyunapp", email = "oss@caiyunapp.com" },
 ]
 requires-python = ">=3.12"
 dependencies = [
@@ -13,6 +20,7 @@ dependencies = [
     "pydantic>=2.10.6",
 ]
 license = { file = "LICENSE" }
+keywords = ["MCP", "Weather"]
 
 [project.urls]
 Homepage = "https://github.com/caiyunapp/mcp-caiyun-weather"
