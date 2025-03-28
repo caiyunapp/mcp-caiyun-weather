@@ -20,7 +20,7 @@ powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | ie
 
 ### Setup with Claude Desktop
 
-```json
+```
 # claude_desktop_config.json
 # Can find location through:
 # Hamburger Menu -> File -> Settings -> Developer -> Edit Config
