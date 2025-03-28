@@ -12,6 +12,11 @@ dependencies = [
     "mcp[cli]>=1.5.0",
     "pydantic>=2.10.6",
 ]
+license = { file = "LICENSE" }
+
+[project.urls]
+Homepage = "https://github.com/caiyunapp/mcp-caiyun-weather"
+Issues = "https://github.com/caiyunapp/mcp-caiyun-weather/issues"
 
 [project.scripts]
 mcp-caiyun-weather = "mcp_caiyun_weather:main"
