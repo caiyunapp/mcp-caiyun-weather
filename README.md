@@ -1,3 +1,5 @@
+[![MseeP.ai Security Assessment Badge](https://mseep.net/pr/caiyunapp-mcp-caiyun-weather-badge.png)](https://mseep.ai/app/caiyunapp-mcp-caiyun-weather)
+
 # Caiyun Weather MCP Server
 
 ## Setup Instructions
