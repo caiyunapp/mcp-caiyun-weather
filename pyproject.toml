@@ -1,6 +1,6 @@
 [project]
 name = "mcp-caiyun-weather"
-version = "0.1.0"
+version = "0.1.1"
 description = "Caiyun Weather MCP Server"
 readme = "README.md"
 maintainers = [
@@ -32,3 +32,10 @@ mcp-caiyun-weather = "mcp_caiyun_weather:main"
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
+
+[dependency-groups]
+dev = [
+    "pytest>=8.0.0",
+    "pytest-asyncio>=0.23.0",
+    "pytest-cov>=4.1.0",
+]

@@ -77,12 +77,12 @@ async def get_hourly_forecast(
             hourly = result["result"]["hourly"]
             forecast = "72-Hour Forecast:\n"
             for i in range(len(hourly["temperature"])):
-                time = hourly["temperature"][i]["datetime"].split("+")[0]
+                time = hourly["temperature"][i]["datetime"]
                 temp = hourly["temperature"][i]["value"]
                 skycon = hourly["skycon"][i]["value"]
                 rain_prob = hourly["precipitation"][i]["probability"]
-                wind_speed = hourly["wind"]["speed"][i]["value"]
-                wind_dir = hourly["wind"]["direction"][i]["value"]
+                wind_speed = hourly["wind"][i]["speed"]
+                wind_dir = hourly["wind"][i]["direction"]
 
                 forecast += f"""
 Time: {time}
@@ -156,7 +156,7 @@ async def get_historical_weather(
             hourly = result["result"]["hourly"]
             history = "Past 24-Hour Weather:\n"
             for i in range(len(hourly["temperature"])):
-                time = hourly["temperature"][i]["datetime"].split("+")[0]
+                time = hourly["temperature"][i]["datetime"]
                 temp = hourly["temperature"][i]["value"]
                 skycon = hourly["skycon"][i]["value"]
 
