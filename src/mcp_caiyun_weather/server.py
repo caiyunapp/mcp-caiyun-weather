@@ -16,6 +16,11 @@ async def make_request(client: httpx.AsyncClient, url: str, params: dict) -> dic
     return response.json()
 
 
+def format_ratio_as_percent(value: float) -> str:
+    """Convert 0~1 ratio values to percentage strings."""
+    return f"{value * 100:.0f}%"
+
+
 @mcp.tool()
 async def get_realtime_weather(
     lng: float = Field(
@@ -31,14 +36,14 @@ async def get_realtime_weather(
             result = await make_request(
                 client,
                 f"https://api.caiyunapp.com/v2.6/{api_token}/{lng},{lat}/realtime",
-                {"lang": "en_US"},
+                {"lang": "en_US", "unit": "metric:v2"},
             )
             result = result["result"]["realtime"]
             return f"""
 Temperature: {result["temperature"]}°C
-Humidity: {result["humidity"]}%
+Humidity: {format_ratio_as_percent(result["humidity"])}
 Wind: {result["wind"]["speed"]} km/h, From north clockwise {result["wind"]["direction"]}°
-Precipitation: {result["precipitation"]["local"]["intensity"]}%
+Precipitation: {result["precipitation"]["local"]["intensity"]} mm/hr
 Air Quality:
     PM2.5: {result["air_quality"]["pm25"]} μg/m³
     PM10: {result["air_quality"]["pm10"]} μg/m³
@@ -72,7 +77,7 @@ async def get_hourly_forecast(
             result = await make_request(
                 client,
                 f"https://api.caiyunapp.com/v2.6/{api_token}/{lng},{lat}/hourly",
-                {"hourlysteps": "72", "lang": "en_US"},
+                {"hourlysteps": "72", "lang": "en_US", "unit": "metric:v2"},
             )
             hourly = result["result"]["hourly"]
             forecast = "72-Hour Forecast:\n"
@@ -111,7 +116,7 @@ async def get_weekly_forecast(
             result = await make_request(
                 client,
                 f"https://api.caiyunapp.com/v2.6/{api_token}/{lng},{lat}/daily",
-                {"dailysteps": "7", "lang": "en_US"},
+                {"dailysteps": "7", "lang": "en_US", "unit": "metric:v2"},
             )
             daily = result["result"]["daily"]
             forecast = "7-Day Forecast:\n"
@@ -151,7 +156,12 @@ async def get_historical_weather(
             result = await make_request(
                 client,
                 f"https://api.caiyunapp.com/v2.6/{api_token}/{lng},{lat}/hourly",
-                {"hourlysteps": "24", "begin": str(timestamp), "lang": "en_US"},
+                {
+                    "hourlysteps": "24",
+                    "begin": str(timestamp),
+                    "lang": "en_US",
+                    "unit": "metric:v2",
+                },
             )
             hourly = result["result"]["hourly"]
             history = "Past 24-Hour Weather:\n"
@@ -185,7 +195,7 @@ async def get_weather_alerts(
             result = await make_request(
                 client,
                 f"https://api.caiyunapp.com/v2.6/{api_token}/{lng},{lat}/weather",
-                {"alert": "true", "lang": "en_US"},
+                {"alert": "true", "lang": "en_US", "unit": "metric:v2"},
             )
             alerts = result["result"].get("alert", {}).get("content", [])
             if not alerts:
