@@ -37,7 +37,7 @@ async def get_realtime_weather(
             return f"""
 Temperature: {result["temperature"]}°C
 Humidity: {result["humidity"]}%
-Wind: {result["wind"]["speed"]} m/s, From north clockwise {result["wind"]["direction"]}°
+Wind: {result["wind"]["speed"]} km/h, From north clockwise {result["wind"]["direction"]}°
 Precipitation: {result["precipitation"]["local"]["intensity"]}%
 Air Quality:
     PM2.5: {result["air_quality"]["pm25"]} μg/m³
@@ -89,7 +89,7 @@ Time: {time}
 Temperature: {temp}°C
 Weather: {skycon}
 Rain Probability: {rain_prob}%
-Wind: {wind_speed}m/s, {wind_dir}°
+Wind: {wind_speed} km/h, {wind_dir}°
 ------------------------"""
             return forecast
     except Exception as e:
