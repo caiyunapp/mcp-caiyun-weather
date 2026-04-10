@@ -110,7 +110,7 @@ async def get_weekly_forecast(
         description="The latitude of the location to get the weather for"
     ),
 ) -> dict:
-    """Get daily weather forecast for the next 7 days."""
+    """Get daily weather forecast for up to 7 days (free tier returns 3 days)."""
     try:
         async with httpx.AsyncClient() as client:
             result = await make_request(
@@ -119,8 +119,9 @@ async def get_weekly_forecast(
                 {"dailysteps": "7", "lang": "en_US", "unit": "metric:v2"},
             )
             daily = result["result"]["daily"]
-            forecast = "7-Day Forecast:\n"
-            for i in range(7):
+            days = len(daily["temperature"])
+            forecast = f"{days}-Day Forecast:\n"
+            for i in range(days):
                 date = daily["temperature"][i]["date"].split("T")[0]
                 temp_max = daily["temperature"][i]["max"]
                 temp_min = daily["temperature"][i]["min"]
