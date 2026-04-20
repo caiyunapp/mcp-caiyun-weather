@@ -43,6 +43,8 @@ e.g. "What's the weather in Beijing Now?"
 ## Local/Dev Setup Instructions
 
 ### Setup with Claude Desktop
+<details>
+<summary>Using uv</summary>
 
 ```
 # claude_desktop_config.json
@@ -65,6 +67,33 @@ e.g. "What's the weather in Beijing Now?"
   }
 }
 ```
+</details>
+
+<details>
+<summary>Using docker</summary>
+
+```
+# cd /ABSOLUTE/PATH/TO/PARENT/FOLDER/mcp-caiyun-weather
+# docker build -t mcp/caiyun-weather .
+{
+  "mcpServers": {
+    "caiyun-weather": {
+      "timeout": 60,
+      "command": "docker",
+      "args": [
+        "run",
+        "-i",
+        "-e",
+        "CAIYUN_WEATHER_API_TOKEN=YOUR_API_TOKEN_HERE",
+        "--rm",
+        "mcp/caiyun-weather"
+      ],
+      "transportType": "stdio"
+    }
+  }
+}
+```
+</details>
 
 ### Debugging
 
