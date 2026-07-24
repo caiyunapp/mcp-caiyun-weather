@@ -7,6 +7,7 @@ import pytest
 
 from mcp_caiyun_weather import __version__
 from mcp_caiyun_weather.server import (
+    REQUEST_TIMEOUT,
     get_historical_weather,
     get_hourly_forecast,
     get_realtime_weather,
@@ -22,13 +23,19 @@ TEST_LAT = 39.9093
 
 
 @pytest.mark.asyncio
-async def test_make_request_sets_user_agent():
-    """Test that API requests identify the MCP client."""
+async def test_make_request_sets_user_agent_and_timeout():
+    """Test that API requests identify the MCP client and set a timeout."""
 
     async def handler(request: httpx.Request) -> httpx.Response:
         assert request.headers["User-Agent"] == (
             f"mcp-caiyun-weather/{__version__}"
         )
+        assert request.extensions["timeout"] == {
+            "connect": REQUEST_TIMEOUT,
+            "read": REQUEST_TIMEOUT,
+            "write": REQUEST_TIMEOUT,
+            "pool": REQUEST_TIMEOUT,
+        }
         return httpx.Response(200, json={"status": "ok"})
 
     transport = httpx.MockTransport(handler)

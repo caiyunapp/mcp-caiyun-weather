@@ -11,6 +11,7 @@ mcp = FastMCP("caiyun-weather", dependencies=["mcp[cli]"])
 
 api_token = os.getenv("CAIYUN_WEATHER_API_TOKEN")
 USER_AGENT = f"mcp-caiyun-weather/{__version__}"
+REQUEST_TIMEOUT = 10.0
 
 
 async def make_request(client: httpx.AsyncClient, url: str, params: dict) -> dict:
@@ -18,6 +19,7 @@ async def make_request(client: httpx.AsyncClient, url: str, params: dict) -> dic
         url,
         params=params,
         headers={"User-Agent": USER_AGENT},
+        timeout=REQUEST_TIMEOUT,
     )
     response.raise_for_status()
     return response.json()
