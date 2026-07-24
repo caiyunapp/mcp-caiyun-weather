@@ -1,8 +1,24 @@
 # Caiyun Weather MCP Server
 
-## Setup Instructions
+## Hosted Server
 
-> Before anything, ensure you have access to the API. You can apply for it at [https://docs.caiyunapp.com/weather-api/](https://docs.caiyunapp.com/weather-api/).
+Caiyun Weather provides a hosted Streamable HTTP MCP server, so you can use
+the weather tools without installing or running this package locally.
+
+```json
+{
+  "url": "https://mcp-weather.caiyunapp.com/mcp",
+  "headers": {
+    "X-Caiyun-API-Key": "YOUR_CAIYUN_WEATHER_API_KEY"
+  }
+}
+```
+
+The outer configuration format depends on your MCP client. Before getting
+started, [register and apply for a Caiyun Weather API key](https://platform.caiyunapp.com),
+then pass it in the `X-Caiyun-API-Key` request header.
+
+## Setup Instructions
 
 Install uv first.
 
