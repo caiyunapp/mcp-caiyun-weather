@@ -84,7 +84,8 @@ npx @modelcontextprotocol/inspector \
     - `lng`: The longitude of the location
     - `lat`: The latitude of the location
   - Returns detailed information including:
-    - Temperature
+    - Temperature and apparent temperature
+    - Sky condition
     - Humidity
     - Wind speed and direction
     - Precipitation intensity
@@ -92,14 +93,16 @@ npx @modelcontextprotocol/inspector \
     - AQI (China and USA standards)
     - Life indices (UV and Comfort)
 
-- `get_hourly_forecast`: Get hourly weather forecast for the next 72 hours
+- `get_hourly_forecast`: Get an hourly weather forecast for a configurable number of hours
   - Parameters:
     - `lng`: The longitude of the location
     - `lat`: The latitude of the location
+    - `hours`: The number of hours to return (`1`–`360`, defaults to `72`)
   - Returns hourly forecast including:
     - Temperature
     - Weather conditions
     - Rain probability
+    - Precipitation intensity (mm/hr)
     - Wind speed and direction
 
 - `get_weekly_forecast`: Get daily weather forecast for the next 7 days
