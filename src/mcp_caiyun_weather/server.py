@@ -5,13 +5,20 @@ import httpx
 from mcp.server.fastmcp import FastMCP
 from pydantic import Field
 
+from ._version import __version__
+
 mcp = FastMCP("caiyun-weather", dependencies=["mcp[cli]"])
 
 api_token = os.getenv("CAIYUN_WEATHER_API_TOKEN")
+USER_AGENT = f"mcp-caiyun-weather/{__version__}"
 
 
 async def make_request(client: httpx.AsyncClient, url: str, params: dict) -> dict:
-    response = await client.get(url, params=params)
+    response = await client.get(
+        url,
+        params=params,
+        headers={"User-Agent": USER_AGENT},
+    )
     response.raise_for_status()
     return response.json()
 
