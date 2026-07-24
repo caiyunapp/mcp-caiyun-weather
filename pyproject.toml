@@ -34,7 +34,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [tool.hatch.version]
-path = "src/mcp_caiyun_weather/__init__.py"
+path = "src/mcp_caiyun_weather/_version.py"
 
 [dependency-groups]
 dev = [
