@@ -1,5 +1,6 @@
 import os
 from datetime import datetime, timedelta
+from typing import Annotated
 
 import httpx
 from mcp.server.fastmcp import FastMCP
@@ -50,6 +51,8 @@ async def get_realtime_weather(
             result = result["result"]["realtime"]
             return f"""
 Temperature: {result["temperature"]}°C
+Apparent Temperature: {result["apparent_temperature"]}°C
+Sky Condition: {result["skycon"]}
 Humidity: {format_ratio_as_percent(result["humidity"])}
 Wind: {result["wind"]["speed"]} km/h, From north clockwise {result["wind"]["direction"]}°
 Precipitation: {result["precipitation"]["local"]["intensity"]} mm/hr
@@ -79,22 +82,35 @@ async def get_hourly_forecast(
     lat: float = Field(
         description="The latitude of the location to get the weather for"
     ),
+    hours: Annotated[
+        int,
+        Field(
+            ge=1,
+            le=360,
+            description="The number of hourly forecast steps to return",
+        ),
+    ] = 72,
 ) -> dict:
-    """Get hourly weather forecast for the next 72 hours."""
+    """Get hourly weather forecast for the requested number of hours."""
     try:
         async with httpx.AsyncClient() as client:
             result = await make_request(
                 client,
                 f"https://api.caiyunapp.com/v2.6/{api_token}/{lng},{lat}/hourly",
-                {"hourlysteps": "72", "lang": "en_US", "unit": "metric:v2"},
+                {
+                    "hourlysteps": str(hours),
+                    "lang": "en_US",
+                    "unit": "metric:v2",
+                },
             )
             hourly = result["result"]["hourly"]
-            forecast = "72-Hour Forecast:\n"
+            forecast = f"{hours}-Hour Forecast:\n"
             for i in range(len(hourly["temperature"])):
                 time = hourly["temperature"][i]["datetime"]
                 temp = hourly["temperature"][i]["value"]
                 skycon = hourly["skycon"][i]["value"]
                 rain_prob = hourly["precipitation"][i]["probability"]
+                precipitation = hourly["precipitation"][i]["value"]
                 wind_speed = hourly["wind"][i]["speed"]
                 wind_dir = hourly["wind"][i]["direction"]
 
@@ -103,6 +119,7 @@ Time: {time}
 Temperature: {temp}°C
 Weather: {skycon}
 Rain Probability: {rain_prob}%
+Precipitation Intensity: {precipitation} mm/hr
 Wind: {wind_speed} km/h, {wind_dir}°
 ------------------------"""
             return forecast

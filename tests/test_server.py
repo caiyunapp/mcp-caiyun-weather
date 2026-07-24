@@ -5,7 +5,7 @@ import os
 import httpx
 import pytest
 
-from mcp_caiyun_weather import __version__
+from mcp_caiyun_weather import __version__, server
 from mcp_caiyun_weather.server import (
     REQUEST_TIMEOUT,
     get_historical_weather,
@@ -20,6 +20,18 @@ from mcp_caiyun_weather.server import (
 # Test coordinates: Beijing, China
 TEST_LNG = 116.3974
 TEST_LAT = 39.9093
+
+
+@pytest.fixture
+def stub_async_client(monkeypatch):
+    class StubAsyncClient:
+        async def __aenter__(self):
+            return self
+
+        async def __aexit__(self, exc_type, exc_value, traceback):
+            return None
+
+    monkeypatch.setattr(server.httpx, "AsyncClient", StubAsyncClient)
 
 
 @pytest.mark.asyncio
@@ -49,6 +61,86 @@ async def test_make_request_sets_user_agent_and_timeout():
     assert result == {"status": "ok"}
 
 
+@pytest.mark.asyncio
+async def test_realtime_weather_includes_sky_condition_and_apparent_temperature(
+    monkeypatch,
+    stub_async_client,
+):
+    async def fake_make_request(client, url, params):
+        return {
+            "result": {
+                "realtime": {
+                    "temperature": 26,
+                    "apparent_temperature": 28.5,
+                    "skycon": "PARTLY_CLOUDY_DAY",
+                    "humidity": 0.65,
+                    "wind": {"speed": 12, "direction": 135},
+                    "precipitation": {"local": {"intensity": 0.2}},
+                    "air_quality": {
+                        "pm25": 12,
+                        "pm10": 24,
+                        "o3": 80,
+                        "so2": 3,
+                        "no2": 18,
+                        "co": 0.6,
+                        "aqi": {"chn": 42, "usa": 38},
+                    },
+                    "life_index": {
+                        "ultraviolet": {"desc": "Moderate"},
+                        "comfort": {"desc": "Comfortable"},
+                    },
+                }
+            }
+        }
+
+    monkeypatch.setattr(server, "make_request", fake_make_request)
+
+    result = await get_realtime_weather(lng=TEST_LNG, lat=TEST_LAT)
+
+    assert "Apparent Temperature: 28.5°C" in result
+    assert "Sky Condition: PARTLY_CLOUDY_DAY" in result
+
+
+@pytest.mark.asyncio
+async def test_hourly_forecast_includes_precipitation_intensity(
+    monkeypatch,
+    stub_async_client,
+):
+    requested_params = {}
+
+    async def fake_make_request(client, url, params):
+        requested_params.update(params)
+        return {
+            "result": {
+                "hourly": {
+                    "temperature": [
+                        {"datetime": "2026-07-24T12:00+08:00", "value": 26}
+                    ],
+                    "skycon": [{"value": "LIGHT_RAIN"}],
+                    "precipitation": [{"value": 1.2, "probability": 65}],
+                    "wind": [{"speed": 12, "direction": 135}],
+                }
+            }
+        }
+
+    monkeypatch.setattr(server, "make_request", fake_make_request)
+
+    result = await get_hourly_forecast(lng=TEST_LNG, lat=TEST_LAT)
+
+    assert requested_params["hourlysteps"] == "72"
+    assert "72-Hour Forecast:" in result
+    assert "Precipitation Intensity: 1.2 mm/hr" in result
+
+    result = await get_hourly_forecast(
+        lng=TEST_LNG,
+        lat=TEST_LAT,
+        hours=24,
+    )
+
+    assert requested_params["hourlysteps"] == "24"
+    assert "24-Hour Forecast:" in result
+
+
 @pytest.fixture
 def api_token():
     """Get API token from environment."""
@@ -72,6 +164,8 @@ class TestGetRealtimeWeather:
 
         # Verify key information is present
         assert "Temperature:" in result
+        assert "Apparent Temperature:" in result
+        assert "Sky Condition:" in result
         assert "Humidity:" in result
         assert "Wind:" in result
         assert "Precipitation:" in result
@@ -100,6 +194,7 @@ class TestGetHourlyForecast:
         assert "Temperature:" in result
         assert "Weather:" in result
         assert "Rain Probability:" in result
+        assert "Precipitation Intensity:" in result
         assert "Wind:" in result
 
 
