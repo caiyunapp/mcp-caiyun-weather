@@ -1,5 +1,7 @@
 # Caiyun Weather MCP Server
 
+[![MCP status](https://mcpvitals.com/badge/1ff580ca08.svg)](https://mcpvitals.com/status/1ff580ca08)
+
 ## Hosted Server
 
 Caiyun Weather provides a hosted Streamable HTTP MCP server, so you can use
